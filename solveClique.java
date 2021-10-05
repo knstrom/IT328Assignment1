@@ -17,9 +17,8 @@ public class solveClique
         String fileName = args[0];
         /* Read Adjacency Matrix from graphs2021.txt*/
         File file = new File(fileName);
-            Scanner readFile = new Scanner(file);
-            ArrayList<Graph> graphs = readFile(fileName);
-            System.out.println(" Max Cliques in graphs in "+fileName+"\n (|V|,|E|) Cliques (size, ms used)");
+        ArrayList<Graph> graphs = readFile(fileName);
+        System.out.println(" Max Cliques in graphs in "+fileName+"\n (|V|,|E|) Cliques (size, ms used)");
             //For each graph in graphs
 
                 /* Find Number vertices and edges */
