@@ -1,0 +1,79 @@
+Solve3CNF.java
+
+Methods:
+
+public static ArrayList<CNF> readFile(String fileName)
+This method reads the cnfs from the file given by the file name parameter and stores them in and returns an ArrayList. The type of the ArrayList is of the CNF class. 
+
+public static int[][] createGraph(CNF cnf, int size)
+This method turns the cnf into a graph with size sides. Each term in the cnf is connected by an edge unless the terms are negations of each other. Only one side of the adjacency matrix is filled in due to symmetry. The diagonal of the matrix indicating that vertices are connected to themselves are not filled with 1's, since they will not be needed. 
+
+
+CNF.java
+
+Instance Variables:
+
+private int countHigh
+The largest unique term in the cnf (regardless of negation).
+
+private int k
+The number of clauses in the cnf.
+
+private String[] stringCnf
+An array holding the string representation of the terms of the cnf.
+
+private int[] intCnf
+An array holding the integer representation of the terms of the cnf.
+
+private boolean[] cnf
+An array holding the boolean representation of the terms of the cnf.
+
+Methods:
+
+public CNF(String stringRep)
+A constuctor for the CNF class. The method turns a string representing a CNF and fills in three arrays of types String, int, and boolean where each index represents one term.
+
+public int findK()
+This method returns the value of k, the number of clauses in the cnf, based on the number of terms in the cnf.
+
+public int findCountHigh()
+This method returns the number of distinct terms in a cnf (regardless of negation) by finding the highest value in the integer array instance variable.
+
+public int getIntCnfValue(int index)
+This method returns the integer value from a given index in the integer array representation of the cnf.
+
+
+SolveISet.java
+
+Methods:
+
+public static ArrayList<Graph> readFile(String fileName)
+This method reads graphs from the file given by the fileName parameter. The graphs are stored in and returned in an ArrayList with a Graph class type.
+
+public static int countEdges(int[][] m, int n)
+This method iterates through the upper half of the adjacency matrix (not including the diagonal) to count the number of edges in the graph.
+
+public static int[][] invertGraph(int[][] m, int n)
+This method iterates through the upper half of the graph (not including the diagonal) to switch the 0's to 1's, and the 1's to 0's.
+
+
+Graph.java
+
+Instance Variables:
+
+private int n
+The dimension of one side of the matrix. It is equal to the number of vertices in the graph.
+
+private int[][] m
+The adjacency matrix representation of the graph.
+
+Methods:
+
+public Graph(int n, int[][] m)
+Constructor for the Graph class. This method accepts a value for n (the dimension for the matrix) and a matrix m and uses them to initialize the instance variables.
+
+public int getN()
+This is an accessor method for the dimension of the matrix (n).
+
+public int[][] getM()
+This is an accessor method for the matrix (m).

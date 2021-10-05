@@ -21,15 +21,26 @@ public class solve3CNF{
         for(int i = 0; i < cnfs.size(); i++){
             CNF curCNF = cnfs.get(i);
             int k = curCNF.findK();
+            int terms = curCNF.findCountHigh();
             int size = k * 3;
 
             int[][] g = createGraph(curCNF, size);
 
-            String[] indexes = new String[size];
-            for(int j = 0; j < size; j++){
+            String[] indexes = new String[terms];
+            for(int j = 0; j < terms; j++){
                 indexes[j] = "X";
             }
 
+            // int[] clique = new int[size];
+            // for(int j = 0; j < size; j++){
+            //     for(int l = j+1; l < size; l++){
+            //         for(int m = l+1; m < size; m++){
+            //             for(int n = m+1; n < size; n++){
+            //                 if(g[j][l] == 1 && g[j][m] == 1 && g[j][n] == 1 && g[l][m] == 1 && g[l][n] == 1 && g[m][n] == 1)
+            //             }
+            //         }
+            //     }
+            // }
             //clique on g
             //Number of clique is k
             //If in clique and not negative, T
