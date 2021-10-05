@@ -18,36 +18,12 @@ public class solveClique
         /* Read Adjacency Matrix from graphs2021.txt*/
         File file = new File(fileName);
             Scanner readFile = new Scanner(file);
-            ArrayList<Graph> graph = readFile(fileName);
-            System.out.println(" Max Cliques in graphs in " + fileName +"\n (|V|,|E|) Cliques (size, ms used)");
-            try{
-                Scanner file = new Scanner(new File(fileName));
-                //While not eof
-                while(file.hasNext()){
-                    int num = file.nextInt();
-                    int[][] matrix = new int[num][num];
-                    file.nextLine();
-    
-                    for (int i = 0; i < num; i ++){
-                        String mLine = file.nextLine();
-                        StringTokenizer parser = new StringTokenizer(mLine, " ", false);
-    
-                        for(int j = 0; j < num; j++){
-                            matrix[i][j] = Integer.parseInt(parser.nextToken());
-                        }                    
-                    }
-                    graph.add(new Graph(num, matrix));
-                }
-                file.close();
-            }
-            catch(FileNotFoundException e){
-                System.out.println("Could not find" + fileName);
-            }
-            //While 
-            //For each graph - read line by line or char by char?
+            ArrayList<Graph> graphs = readFile(fileName);
+            System.out.println(" Max Cliques in graphs in "+fileName+"\n (|V|,|E|) Cliques (size, ms used)");
+            //For each graph in graphs
 
                 /* Find Number vertices and edges */
-                    //int verticies = firstNum;
+                    //int verticies = n;
                     //int edges = count ones
 
                 /* Find Maximum k-clique */
@@ -62,5 +38,34 @@ public class solveClique
                         ............
                         G100 (100,3428) {4,6,7,11,24,32,33,39,41,67,68,84,88,94 } (size=14, 8011 ms) */
         }
+    }
+    public static ArrayList<Graph> readFile(String fileName)
+    {
+        ArrayList<Graph> graphs = new ArrayList<Graph>();
+        try{
+            Scanner file = new Scanner(new File(fileName));
+
+            while(file.hasNext()){
+                int n = file.nextInt();
+                int[][] m = new int[n][n];
+                file.nextLine();
+
+                for (int i = 0; i < n; i ++){
+                    String mLine = file.nextLine();
+                    StringTokenizer parser = new StringTokenizer(mLine, " ", false);
+
+                    for(int j = 0; j < n; j++){
+                        m[i][j] = Integer.parseInt(parser.nextToken());
+                    }                    
+                }
+                graphs.add(new Graph(n, m));
+            }
+            file.close();
+        }
+        catch(FileNotFoundException e)
+        {
+            System.out.println("Could not find" + fileName);
+        }
+        return graphs;
     }
 }
