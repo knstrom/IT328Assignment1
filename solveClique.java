@@ -38,7 +38,6 @@ public class solveClique
                         ............
                         G100 (100,3428) {4,6,7,11,24,32,33,39,41,67,68,84,88,94 } (size=14, 8011 ms) */
         }
-    }
     public static ArrayList<Graph> readFile(String fileName)
     {
         ArrayList<Graph> graphs = new ArrayList<Graph>();
