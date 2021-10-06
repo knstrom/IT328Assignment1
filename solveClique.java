@@ -14,9 +14,10 @@ public class solveClique
 {
     public static void main(String args[])
     {
-        String fileName = args[0];
+        String fileName = args[1];
         /* Read Adjacency Matrix from graphs2021.txt*/
         File file = new File(fileName);
+        Graph test = new Graph();
         ArrayList<Graph> graphs = readFile(fileName);
         System.out.println(" Max Cliques in graphs in "+fileName+"\n (|V|,|E|) Cliques (size, ms used)");
             //For each graph in graphs
