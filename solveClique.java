@@ -12,9 +12,10 @@ import java.io.FileNotFoundException;
 
 public class solveClique
 {
+    static ArrayList<Integer> verts = new ArrayList<Integer>();
     public static void main(String args[])
     {
-        String fileName = args[0];
+        String fileName = "graphs2021.txt";//args[0];
         /* Read Adjacency Matrix from graphs2021.txt*/
         ArrayList<Graph> graphs = readFile(fileName);
         System.out.println(" Max Cliques in graphs in "+fileName+"\n (|V|,|E|) Cliques (size, ms used)");
@@ -23,14 +24,16 @@ public class solveClique
         {
             ArrayList<Integer> verticies = new ArrayList<Integer>();
             Graph current = graphs.get(i);
-            System.out.print("G"+i+" ("+current.getN()+", "+getNumEdges(current) + " {");
+            fillVerts(current.getN());
+            System.out.print("G"+(i+1)+" ("+current.getN()+", "+getNumEdges(current) + ") {");
             long startTime = System.currentTimeMillis();
             int maxClique = findMaxClique(current, 0, 1);
-            verticies = kclique(current, 0, 1, verticies);
+            verticies = kclique(current, 0, 1, maxClique,verticies);
             long endTime = System.currentTimeMillis();
             long duration = endTime - startTime;
             printVerts(verticies);
             System.out.print("} size="+maxClique+", "+duration+"ms)\n");
+            verts.clear();
         }
     }
 
@@ -82,13 +85,13 @@ public class solveClique
         return total;
     }
 
-    public static boolean isAClique(int numVert, int[][] m)
+    public static boolean isAClique(Graph g, int numVert)
     {
         for(int i=1;i<numVert;i++)
         {
             for(int j=i+1; j<numVert; j++)
             {
-                if(m[i][j]==0)
+                if(g.getM()[verts.get(i)][verts.get(j)]==0)
                 {
                     return false;
                 }
@@ -99,12 +102,11 @@ public class solveClique
 
     public static int findMaxClique(Graph g, int startVert, int vertNum)
     {
-        ArrayList<Integer> verts = new ArrayList<Integer>();
         int max = 0;
-        for(int i=startVert+1; i<=g.getN(); i++)
+        for(int i=startVert+1; i<g.getN(); i++)
         {
             verts.add(vertNum, i);
-            if(isAClique(vertNum+1, g.getM()))
+            if(isAClique(g, vertNum+1));
             {
                 max = Math.max(max, vertNum);
                 max = Math.max(max,findMaxClique(g, i, vertNum+1));
@@ -113,20 +115,19 @@ public class solveClique
         return max;
     }
 
-    public static ArrayList<Integer> kclique(Graph g, int startVert, int vertNum, ArrayList<Integer> verticies)
+    public static ArrayList<Integer> kclique(Graph g, int startVert, int vertNum, int maxClique, ArrayList<Integer> verticies)
     {
-        ArrayList<Integer> verts = new ArrayList<Integer>();
-        int max = findMaxClique(g, 0, 1);
-        for(int i= startVert+1; i<g.getN()-(max-1); i++)
+        int max = maxClique;
+        for(int i= startVert+1; i<g.getN()-(max-vertNum); i++)
         {
             if(getDegree(g, i) >= max)
             {
                 verts.add(vertNum, i);
-                if(isAClique(vertNum + 1, g.getM()))
+                if(isAClique(g, vertNum + 1))
                 {
                     if(vertNum < max)
                     {
-                        kclique(g, i, vertNum+1, verticies);
+                        kclique(g, i, vertNum+1, max, verticies);
                     }
                     else
                     {
@@ -147,10 +148,7 @@ public class solveClique
         int deg = -1;
         for(int i=0; i<g.getN(); i++)
         {
-            for(int j=0; j<g.getN(); j++)
-            {
-                deg += g.getM()[i][j];
-            }
+            deg += g.getM()[vert][i];
         }
         return deg;
     }
@@ -164,6 +162,14 @@ public class solveClique
             {
                 System.out.print(",");
             }
+        }
+    }
+
+    public static void fillVerts(int n)
+    {
+        for(int i=0; i<n; i++)
+        {
+            verts.add(0);
         }
     }
 
