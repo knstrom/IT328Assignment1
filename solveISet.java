@@ -20,23 +20,26 @@ public class solveISet{
         System.out.println("   (|V|,|E|) Independent Set (size, ms used)");
         
         for(int i = 0; i < graphs.size(); i++){
+            long start = System.nanoTime();
+            
             Graph curGraph = graphs.get(i);
             int[][] m = curGraph.getM();
             int n = curGraph.getN();;
 
             int e = countEdges(m, n);
-            int[][] mPrime = invertGraph(m, n);
+            int[][] inverse = invertGraph(m, n);
+            Graph mPrime = new Graph(n, inverse);
 
-            boolean iSetFound = false;
-            for(int j = n; j > 0 && !iSetFound; j--){
-                //mPrime.kclique(i);
-            }
+            int cliqueResult = solveClique.findMaxClique(mPrime, 0, 1);
 
-            System.out.println("G" + (i+1) + " (" + n + ", " + e + ")" /*set, size, time*/);
+            ArrayList<Integer> clique = null;
+            clique = solveClique.kclique(mPrime, 0, cliqueResult, new ArrayList<Integer>());
+            
+            long end = System.nanoTime();
+
+            System.out.println("G" + (i+1) + " (" + n + ", " + e + ") " + clique + " (size=" + cliqueResult + ", " + (end - start) + " ms)");
         }
-        //clique on mPrime
-        //Number of clique increases incrementally, start with n and work to 0
-        //If get to 0 and flag is false (check for any to be true), cannot say a I set exists        
+        System.out.println("***");
     }
 
     public static ArrayList<Graph> readFile(String fileName){

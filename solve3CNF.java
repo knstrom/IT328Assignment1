@@ -19,39 +19,88 @@ public class solve3CNF{
         System.out.println("X means can be either T or F");
 
         for(int i = 0; i < cnfs.size(); i++){
+            long start = System.nanoTime();
+
             CNF curCNF = cnfs.get(i);
             int k = curCNF.findK();
             int terms = curCNF.findCountHigh();
             int size = k * 3;
 
-            int[][] g = createGraph(curCNF, size);
+            int[][] matrix = createGraph(curCNF, size);
+            Graph g = new Graph(size, matrix);
 
             String[] indexes = new String[terms];
             for(int j = 0; j < terms; j++){
                 indexes[j] = "X";
             }
 
-            // int[] clique = new int[size];
-            // for(int j = 0; j < size; j++){
-            //     for(int l = j+1; l < size; l++){
-            //         for(int m = l+1; m < size; m++){
-            //             for(int n = m+1; n < size; n++){
-            //                 if(g[j][l] == 1 && g[j][m] == 1 && g[j][n] == 1 && g[l][m] == 1 && g[l][n] == 1 && g[m][n] == 1)
-            //             }
-            //         }
-            //     }
-            // }
             //clique on g
+            int maxClique = solveClique.findMaxClique(g, 0, 1);
+
             //Number of clique is k
-            //If in clique and not negative, T
-            //If in clique and negative, F
-            //If not in clique, X
+            ArrayList<Integer> cliqueResult = null;
+            if(maxClique == k){
+                cliqueResult = solveClique.kclique(g, 0, maxClique, new ArrayList<Integer>());
 
-            //g.kclique(k);
+                for(int j = 0; j < terms; j++){
+                    if(cliqueResult.contains((Integer)(j + 1))){
+                        indexes[j] = "T";
+                    }
+                    else if(cliqueResult.contains((Integer)(-(j+ 1)))){
+                        indexes[j] = "F";
+                    }
+                }
+            }
 
-            //for each vertex in clique
-            //assign T or F
+            long end = System.nanoTime();
+            
+            //Print
+            System.out.print("3CNF No. " + (i + 1) + ": [n=" + terms + " k=" + k + "] ");
+
+            if(cliqueResult == null){
+                System.out.println("No solution.");
+            }
+            else{
+                print(indexes, terms);
+            }
+            System.out.println();
+
+            for(int j = 0; j < k; j++){
+                System.out.print("(");
+                for(int l = 0; l < 3; l++){
+                    System.out.print(curCNF.getIntCnfValue(l));
+                    if(l < 2){
+                        System.out.print("|");
+                    }
+                }
+                System.out.print(")");
+                if(j < k-1){
+                    System.out.print("^");
+                }
+            }
+
+            if(cliqueResult != null){
+                print(indexes, terms);
+                System.out.print("==>");
+
+                for(int j = 0; j < k; j++){
+                    System.out.print("(");
+                    for(int l = 0; l < 3; l++){
+                        System.out.print(indexes[j*3 + l]);
+                        if(l < 2){
+                            System.out.print("|");
+                        }
+                    }
+                    System.out.print(")");
+                    if(j < k-1){
+                        System.out.print("^");
+                    }
+                }
+            }
+
+            System.out.println("  (" + (end - start) + " ms)");
         }
+        System.out.println("***");
     }
     
     public static ArrayList<CNF> readFile(String fileName){
@@ -76,6 +125,10 @@ public class solve3CNF{
         int[][] g = new int[size][size];
 
         for(int i = 0; i < size; i++){
+            g[i][i] = 1;
+        }
+
+        for(int i = 0; i < size; i++){
             for(int j = i + 1; j < size; j++){
                 if(!(cnf.getIntCnfValue(i) == -cnf.getIntCnfValue(j)) && i/3 != j/3){
                     g[i][j] = 1;
@@ -86,5 +139,14 @@ public class solve3CNF{
         return g;
     }
 
-    
+    public static void print(String[] bools, int n){
+        System.out.print("[");
+        for(int j = 0; j < n; j++){
+            System.out.print((j+1) + ":" + bools[j]);
+            if(j < n-1){
+                System.out.print(" ");
+            }
+        }
+        System.out.print("]");
+    }
 }
