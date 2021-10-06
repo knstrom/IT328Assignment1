@@ -8,6 +8,9 @@ This method reads the cnfs from the file given by the file name parameter and st
 public static int[][] createGraph(CNF cnf, int size)
 This method turns the cnf into a graph with size sides. Each term in the cnf is connected by an edge unless the terms are negations of each other. Only one side of the adjacency matrix is filled in due to symmetry. The diagonal of the matrix indicating that vertices are connected to themselves are not filled with 1's, since they will not be needed. 
 
+public static void print(String[] bools, int n)
+This method prints the boolean solution to a 3 CNF.
+
 
 CNF.java
 
