@@ -30,7 +30,7 @@ public class solveClique
             long endTime = System.currentTimeMillis();
             long duration = endTime - startTime;
             printVerts(verticies);
-            System.out.print(" size="+maxClique+", "+duration+"ms)\n");
+            System.out.print("} size="+maxClique+", "+duration+"ms)\n");
         }
     }
 
