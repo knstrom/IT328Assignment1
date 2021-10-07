@@ -1,4 +1,21 @@
-Solve3CNF.java
+solveClique.java
+
+Methods:
+
+public static ArrayList<Graph> readFile(String fileName)
+This method reads the graphs from the file given by the fileName parameter and returns them in an array list of the type Graph.
+
+public static int countEdges(int[][] m, int n)
+This method counts and returns the number of edges in the upper half of the graph, not including the diagonal.
+
+public static ArrayList<Integer> findCliqueFromStart(int[][] m, int n, int firstVert, int noEdge)
+This method finds a single maximum clique from a given starting vertex, moving from right to left.
+
+public static ArrayList<Integer> findMaxClique(int[][] m, int n, int noEdge)
+This method calls findCliqueFromStart for every vertex in the graph. This method is called by solveClique.java, solve3CNF.java, and solveISet.java.
+
+
+solve3CNF.java
 
 Methods:
 
@@ -46,7 +63,7 @@ public int getIntCnfValue(int index)
 This method returns the integer value from a given index in the integer array representation of the cnf.
 
 
-SolveISet.java
+solveISet.java
 
 Methods:
 
@@ -55,9 +72,6 @@ This method reads graphs from the file given by the fileName parameter. The grap
 
 public static int countEdges(int[][] m, int n)
 This method iterates through the upper half of the adjacency matrix (not including the diagonal) to count the number of edges in the graph.
-
-public static int[][] invertGraph(int[][] m, int n)
-This method iterates through the upper half of the graph (not including the diagonal) to switch the 0's to 1's, and the 1's to 0's.
 
 
 Graph.java

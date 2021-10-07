@@ -27,17 +27,22 @@ public class solveISet{
             int n = curGraph.getN();;
 
             int e = countEdges(m, n);
-            int[][] inverse = invertGraph(m, n);
-            Graph mPrime = new Graph(n, inverse);
 
-            int cliqueResult = solveClique.findMaxClique(mPrime, 0, 1);
-
-            ArrayList<Integer> clique = null;
-            clique = solveClique.kclique(mPrime, 0, cliqueResult, new ArrayList<Integer>());
+            ArrayList<Integer> cliqueResult = solveClique.findMaxClique(m, n, 1);
+            int cliqueSize = cliqueResult.size();
             
             long end = System.nanoTime();
 
-            System.out.println("G" + (i+1) + " (" + n + ", " + e + ") " + clique + " (size=" + cliqueResult + ", " + (end - start) + " ms)");
+            System.out.print("G" + (i+1) + " (" + n + ", " + e + ") {");
+
+            for(int j = 0; j < cliqueSize; j++){
+                System.out.print(cliqueResult.get(j));
+
+                if(j < cliqueSize - 1){
+                    System.out.print(", ");
+                }
+            }
+            System.out.println("} (size=" + cliqueSize + ", " + (end - start) + " ms)");
         }
         System.out.println("***");
     }
@@ -84,20 +89,5 @@ public class solveISet{
         }
         
         return total;
-    }
-
-    public static int[][] invertGraph(int[][] m, int n){
-        for(int i = 0; i < n; i++){
-            for(int j = i + 1; j < n; j++){
-                if(m[i][j] == 1){
-                    m[i][j] = 0;
-                }
-                else{
-                    m[i][j] = 1;
-                }
-            }
-        }
-
-        return m;
     }
 }

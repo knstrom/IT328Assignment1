@@ -41,8 +41,8 @@ public class CNF{
         countHigh = 0;
 
         for(int i = 0; i < cnf.length; i++){
-            if(intCnf[i] > countHigh){
-                countHigh = intCnf[i];
+            if(Math.abs(intCnf[i]) > countHigh){
+                countHigh = Math.abs(intCnf[i]);
             }
         }
 

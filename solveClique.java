@@ -12,34 +12,43 @@ import java.io.FileNotFoundException;
 
 public class solveClique
 {
-    public static void main(String args[])
-    {
+    public static void main(String[] args){
         String fileName = args[0];
-        /* Read Adjacency Matrix from graphs2021.txt*/
-        File file = new File(fileName);
+        
         ArrayList<Graph> graphs = readFile(fileName);
-        System.out.println(" Max Cliques in graphs in "+fileName+"\n (|V|,|E|) Cliques (size, ms used)");
-            //For each graph in graphs
+        System.out.println("* Max Cliques in graphs in "+fileName+"\n    (|V|,|E|) Cliques (size, ms used)");
 
-                /* Find Number vertices and edges */
-                    //int verticies = n;
-                    //int edges = count ones
+        for(int i = 0; i<graphs.size();i++)
+        {
+            Graph current = graphs.get(i);
+            int[][] m = current.getM();
+            int n = current.getN();
+            
+            System.out.print("G" + (i+1) + " (" + n +", " + countEdges(m, n) + ") {");
+            
+            long startTime = System.currentTimeMillis();
 
-                /* Find Maximum k-clique */
+            ArrayList<Integer> maxClique = findMaxClique(m, n, 0);
+            int maxCliqueSize = maxClique.size();
 
-                /* Print in following format:
-                        Max Cliques in graphs in graphs2021.txt
-                        (|V|,|E|) Cliques (size, ms used)
-                        G1 (5, 2) {0,4} (size=2, 0 ms)
-                        G2 (5, 4) {0,1,4} (size=3, 0 ms)
-                        G3 (5, 6) {0,2,4} (size=3, 0 ms)
-                        ............
-                        ............
-                        G100 (100,3428) {4,6,7,11,24,32,33,39,41,67,68,84,88,94 } (size=14, 8011 ms) */
+            for(int j = 0; j < maxCliqueSize; j++){
+                System.out.print(maxClique.get(j));
+
+                if(j < maxCliqueSize - 1){
+                    System.out.print(",");
+                }
+            }
+
+            long endTime = System.currentTimeMillis();
+            long duration = endTime - startTime;
+
+            System.out.print("} size=" + maxCliqueSize + ", " + duration + "ms)\n");
         }
-    public static ArrayList<Graph> readFile(String fileName)
-    {
+    }
+
+    public static ArrayList<Graph> readFile(String fileName){
         ArrayList<Graph> graphs = new ArrayList<Graph>();
+        
         try{
             Scanner file = new Scanner(new File(fileName));
 
@@ -60,10 +69,58 @@ public class solveClique
             }
             file.close();
         }
-        catch(FileNotFoundException e)
-        {
+        catch(FileNotFoundException fnfe){
             System.out.println("Could not find" + fileName);
         }
+
         return graphs;
+    }
+
+    public static int countEdges(int[][] m, int n){
+        int total = 0;
+        
+        for(int i = 0; i < n - 1; i++){
+            for(int j = i + 1; j < n; j++){
+                if( m[i][j] == 1){
+                    total++;
+                }
+            }
+        }
+        
+        return total;
+    }
+
+    public static ArrayList<Integer> findCliqueFromStart(int[][] m, int n, int firstVert, int noEdge){
+        ArrayList<Integer> clique = new ArrayList<Integer>();
+        clique.add(firstVert);
+
+        for(int i = 0; i < n; i++){
+            boolean matchesAll = true;
+            for(Integer vertex : clique){
+                if(m[vertex][i] == noEdge || i == vertex){
+                    matchesAll = false;
+                }
+            }
+
+            if(matchesAll){
+                clique.add(i);
+            }
+        }
+        
+        return clique;
+    }
+
+    public static ArrayList<Integer> findMaxClique(int[][] m, int n, int noEdge){
+        ArrayList<Integer> maxClique = new ArrayList<Integer>();
+
+        for(int i = 0; i < n; i++){
+            ArrayList<Integer> curClique = findCliqueFromStart(m, n, i, noEdge);
+
+            if(curClique.size() > maxClique.size()){
+                maxClique = curClique;
+            }
+        }
+
+        return maxClique;
     }
 }

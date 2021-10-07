@@ -7,6 +7,7 @@ Reduce 3CNF to K-Clique
 
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.Random;
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -16,7 +17,7 @@ public class solve3CNF{
         ArrayList<CNF> cnfs = readFile(fileName);
 
         System.out.println("* Solve 3CNF " + fileName + ":  (reduced to K-Clique) *");
-        System.out.println("X means can be either T or F");
+        System.out.println("X means can be either T or F\n");
 
         for(int i = 0; i < cnfs.size(); i++){
             long start = System.nanoTime();
@@ -27,28 +28,39 @@ public class solve3CNF{
             int size = k * 3;
 
             int[][] matrix = createGraph(curCNF, size);
-            Graph g = new Graph(size, matrix);
 
             String[] indexes = new String[terms];
             for(int j = 0; j < terms; j++){
                 indexes[j] = "X";
             }
 
-            //clique on g
-            int maxClique = solveClique.findMaxClique(g, 0, 1);
+            //clique
+            ArrayList<Integer> maxClique = solveClique.findMaxClique(matrix, size, 0);
+            int cliqueSize = maxClique.size();
 
-            //Number of clique is k
-            ArrayList<Integer> cliqueResult = null;
-            if(maxClique == k){
-                cliqueResult = solveClique.kclique(g, 0, maxClique, new ArrayList<Integer>());
-
+            //No clique
+            if (cliqueSize != k){
+                Random rand = new Random();
                 for(int j = 0; j < terms; j++){
-                    if(cliqueResult.contains((Integer)(j + 1))){
+                    int assignment = rand.nextInt(2) + 1;
+
+                    if(assignment == 1){
                         indexes[j] = "T";
                     }
-                    else if(cliqueResult.contains((Integer)(-(j+ 1)))){
+                    else{
                         indexes[j] = "F";
                     }
+                }
+            }
+
+            //Number of clique is k
+            for(Integer vertex : maxClique){
+                int termVal = curCNF.getIntCnfValue(vertex);
+                if(termVal > 0){
+                    indexes[Math.abs(termVal) - 1] = "T";
+                }
+                else{
+                    indexes[Math.abs(termVal) - 1] = "F";
                 }
             }
 
@@ -57,8 +69,8 @@ public class solve3CNF{
             //Print
             System.out.print("3CNF No. " + (i + 1) + ": [n=" + terms + " k=" + k + "] ");
 
-            if(cliqueResult == null){
-                System.out.println("No solution.");
+            if(cliqueSize != k){
+                System.out.print("No solution.");
             }
             else{
                 print(indexes, terms);
@@ -68,7 +80,7 @@ public class solve3CNF{
             for(int j = 0; j < k; j++){
                 System.out.print("(");
                 for(int l = 0; l < 3; l++){
-                    System.out.print(curCNF.getIntCnfValue(l));
+                    System.out.print(curCNF.getIntCnfValue(j*3 + l));
                     if(l < 2){
                         System.out.print("|");
                     }
@@ -78,27 +90,38 @@ public class solve3CNF{
                     System.out.print("^");
                 }
             }
+            System.out.print(" ");
 
-            if(cliqueResult != null){
-                print(indexes, terms);
-                System.out.print("==>");
+            
+            print(indexes, terms);
+            System.out.print("==>");
 
-                for(int j = 0; j < k; j++){
-                    System.out.print("(");
-                    for(int l = 0; l < 3; l++){
-                        System.out.print(indexes[j*3 + l]);
-                        if(l < 2){
-                            System.out.print("|");
-                        }
+            for(int j = 0; j < k; j++){
+                System.out.print("(");
+                for(int l = 0; l < 3; l++){
+                    int termVal = curCNF.getIntCnfValue(j*3 + l);
+                    if(termVal > 0 && indexes[Math.abs(curCNF.getIntCnfValue(j*3 + l)) - 1].equals("T") || termVal < 0 && indexes[Math.abs(curCNF.getIntCnfValue(j*3 + l)) - 1].equals("F")){
+                        System.out.print("T");
                     }
-                    System.out.print(")");
-                    if(j < k-1){
-                        System.out.print("^");
+                    else if(termVal < 0 && indexes[Math.abs(curCNF.getIntCnfValue(j*3 + l)) - 1].equals("T") || termVal > 0 && indexes[Math.abs(curCNF.getIntCnfValue(j*3 + l)) - 1].equals("F")){
+                        System.out.print("F");
+                    }
+                    else{
+                        System.out.print("X");
+                    }
+                    
+                    if(l < 2){
+                        System.out.print("|");
                     }
                 }
+                System.out.print(")");
+                if(j < k-1){
+                    System.out.print("^");
+                }
             }
+            
 
-            System.out.println("  (" + (end - start) + " ms)");
+            System.out.println("  (" + (end - start) + " ms)\n");
         }
         System.out.println("***");
     }
